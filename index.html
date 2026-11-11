@@ -1,1 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Las cartas de Tom · 11:11</title>
 
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: #694714;
+  background:
+    radial-gradient(circle at 15% 20%, white, transparent 40%),
+    linear-gradient(135deg, #fffaf0, #f3dfb4, #fffaf2);
+  min-height: 100vh;
+}
+
+[hidden] { display: none !important; }
+
+button {
+  cursor: pointer;
+  font: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible {
+  outline: 3px solid #9a6414;
+  outline-offset: 5px;
+}
+
+#inicio {
+  max-width: 500px;
+  margin: auto;
+  text-align: center;
+  padding-bottom: 25px;
+}
+
+.portada {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.boton {
+  display: block;
+  width: min(90%, 340px);
+  margin: 20px auto;
+  padding: 17px 20px;
+  border: 1px solid #af791f;
+  border-radius: 35px;
+  background: linear-gradient(130deg, #ffe9a9, #dca53d, #ffe8a2);
+  color: #57320b;
+  font-weight: bold;
+  box-shadow: 0 7px 20px #ae7e2530;
+}
+
+.boton:hover { filter: brightness(1.08); }
+
+#juego {
+  max-width: 650px;
+  margin: auto;
+  padding: 30px 15px;
+  text-align: center;
+  min-height: 100vh;
+}
+
+.marca {
+  display: inline-block;
+  padding: 12px 20px;
+  border: 1px solid #cba754;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+h1 {
+  font-family: Georgia, serif;
+  font-size: 34px;
+  margin: 30px 0 15px;
+}
+
+h1 span {
+  display: block;
+  font-size: 80px;
+  color: #bb8829;
+  text-shadow: 2px 2px white;
+}
+
+.descripcion {
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.datos {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 22px 0 35px;
+}
+
+.datos span {
+  border: 1px solid #d8bd82;
+  background: #ffffff85;
+  border-radius: 25px;
+  padding: 9px 12px;
+  font-size: 12px;
+}
+
+.cartas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  max-width: 510px;
+  margin: auto;
+  perspective: 1000px;
+}
+
+.carta {
+  border: 0;
+  padding: 0;
+  background: none;
+  aspect-ratio: 0.59;
+  transition: transform .3s, opacity .3s;
+}
+
+.carta:not(:disabled):hover {
+  transform: translateY(-8px);
+}
+
+.interior {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 1s;
+}
+
+.carta.abierta .interior {
+  transform: rotateY(180deg);
+}
+
+.cara {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  backface-visibility: hidden;
+  border: 2px solid #c69a3c;
+  border-radius: 15px;
+  background:
+    linear-gradient(140deg,
+      #fffdf8, #f1e4d0 35%, #ffffff 55%, #f3e6cb);
+  box-shadow:
+    inset 0 0 0 4px #fff9ed,
+    inset 0 0 0 5px #e0c990,
+    0 10px 20px #8c65222a;
+}
+
+.cara::before,
+.cara::after {
+  content: "✦";
+  position: absolute;
+  color: #d3a647;
+  font-size: 22px;
+}
+
+.cara::before { top: 12px; left: 12px; }
+.cara::after { bottom: 12px; right: 12px; }
+
+.frente strong {
+  font-family: Georgia, serif;
+  font-size: clamp(25px, 7vw, 46px);
+  color: #bb892b;
+  text-shadow: 1px 2px white;
+}
+
+.frente small {
+  position: absolute;
+  bottom: 35px;
+  color: #a37a32;
+  letter-spacing: 2px;
+  font-size: 9px;
+}
+
+.dorso { transform: rotateY(180deg); }
+
+.dorso strong {
+  color: #b47d1e;
+  font-family: Georgia, serif;
+  font-size: clamp(32px, 8vw, 58px);
+}
+
+.dorso small {
+  font-size: 8px;
+  margin: 12px 0 6px;
+}
+
+.dorso b {
+  font-size: clamp(14px, 4vw, 22px);
+}
+
+.carta.apagada {
+  opacity: .35;
+  transform: scale(.95);
+}
+
+.carta:disabled { cursor: default; }
+
+#estado {
+  margin: 27px 0;
+  font-size: 14px;
+  min-height: 22px;
+}
+
+.resultado {
+  padding: 22px 15px;
+  max-width: 450px;
+  margin: auto;
+  background: #fffaf1ed;
+  border: 1px solid #d8b970;
+  border-radius: 22px;
+  animation: aparecer .5s ease;
+}
+
+.resultado h2 {
+  font-family: Georgia, serif;
+  font-size: 30px;
+  color: #ad761d;
+  margin: 12px 0;
+}
+
+.resultado p { line-height: 1.6; }
+
+.reclamo {
+  color: #8c6d38;
+  font-size: 13px;
+}
+
+.volver {
+  border: 0;
+  background: none;
+  color: #8b6a32;
+  padding: 15px;
+  margin: 15px auto 0;
+}
+
+.prueba {
+  color: #9d875e;
+  font-size: 10px;
+  margin: 24px 0;
+}
+
+.brillo {
+  position: fixed;
+  z-index: 10;
+  pointer-events: none;
+  color: #c99427;
+  font-size: 22px;
+  animation: caer 1.8s ease-out forwards;
+}
+
+@keyframes caer {
+  to {
+    transform: translateY(70vh) rotate(240deg);
+    opacity: 0;
+  }
+}
+
+@keyframes aparecer {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<section id="inicio">
+  <img
+    class="portada"
+    src="portada.png"
+    alt="Tom anuncia su sorpresa del 11/11.
+    Con tu carga de $11.000 te llevás un premio.
+    De 12:30 a 15:00 hs."
+  >
+
+  <button class="boton" id="jugar">
+    ✨ Elegir mi carta ✨
+  </button>
+
+  <p>Tres cartas. Una sorpresa para vos.</p>
+</section>
+
+<main id="juego" hidden>
+  <div class="marca">✦ COMUNIDAD TOM ✦</div>
+
+  <h1>La magia del <span>11:11</span></h1>
+
+  <p class="descripcion">
+    Tom tiene una sorpresa para vos.<br>
+    Elegí una carta y descubrí tu premio.
+  </p>
+
+  <div class="datos">
+    <span>Carga de $11.000</span>
+    <span>12:30 a 15:00 hs</span>
+  </div>
+
+  <div class="cartas" id="cartas"></div>
+
+  <p id="estado" role="status" aria-live="polite">
+    Tocá la carta que más te guste ✨
+  </p>
+
+  <section id="resultado" class="resultado" hidden>
+    <p>✨ ¡ESTA ES TU SORPRESA! ✨</p>
+    <h2>¡Te llevás un <span id="premio"></span>!</h2>
+
+    <p>
+      De bonificación en tu carga de <b>$11.000</b>.
+    </p>
+
+    <p class="reclamo">
+      Mostrá esta pantalla para reclamar tu premio.
+    </p>
+
+    <button class="boton" id="otra">
+      Volver a probar ↻
+    </button>
+  </section>
+
+  <button class="volver" id="volver">
+    ← Volver al inicio
+  </button>
+
+  <p class="prueba">
+    VERSIÓN DE PRUEBA · Podés jugar varias veces
+  </p>
+</main>
+
+<script>
+// Premios disponibles.
+// Todavía no se aplica el bloqueo de una participación.
+const PREMIOS = [25, 15, 20];
+
+const elemento = id => document.getElementById(id);
+let elegida = false;
+let temporizador;
+
+function prepararJuego() {
+  clearTimeout(temporizador);
+  elegida = false;
+
+  elemento("resultado").hidden = true;
+  elemento("estado").textContent =
+    "Tocá la carta que más te guste ✨";
+
+  elemento("cartas").replaceChildren();
+
+  // Mezcla la ubicación de los premios en cada partida.
+  const premiosMezclados = [...PREMIOS];
+
+  for (let i = premiosMezclados.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+
+    [premiosMezclados[i], premiosMezclados[j]] =
+      [premiosMezclados[j], premiosMezclados[i]];
+  }
+
+  premiosMezclados.forEach((premio, numero) => {
+    const carta = document.createElement("button");
+
+    carta.className = "carta";
+    carta.setAttribute(
+      "aria-label",
+      "Elegir carta " + (numero + 1)
+    );
+
+    carta.innerHTML = `
+      <span class="interior">
+        <span class="cara frente">
+          <strong>11:11</strong>
+          <small>TOM</small>
+        </span>
+
+        <span class="cara dorso" aria-hidden="true">
+          <strong>${premio}%</strong>
+          <small>EN TU CARGA DE</small>
+          <b>$11.000</b>
+        </span>
+      </span>
+    `;
+
+    carta.addEventListener("click", () => {
+      elegirCarta(carta, premio);
+    });
+
+    elemento("cartas").appendChild(carta);
+  });
+}
+
+function elegirCarta(carta, premio) {
+  if (elegida) return;
+
+  elegida = true;
+
+  document.querySelectorAll(".carta").forEach(otra => {
+    otra.disabled = true;
+
+    if (otra !== carta) {
+      otra.classList.add("apagada");
+    }
+  });
+
+  carta.classList.add("abierta");
+  carta.setAttribute("aria-label", "Tu premio: " + premio + "%");
+
+  elemento("estado").textContent =
+    "Revelando tu sorpresa...";
+
+  temporizador = setTimeout(() => {
+    elemento("premio").textContent = premio + "%";
+    elemento("resultado").hidden = false;
+
+    elemento("estado").textContent =
+      "¡Tu carta tiene un " + premio + "% de bonificación!";
+
+    celebrar();
+
+    elemento("resultado").scrollIntoView({
+      behavior: movimientoReducido() ? "auto" : "smooth",
+      block: "nearest"
+    });
+  }, 1000);
+}
+
+function movimientoReducido() {
+  return window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+}
+
+function celebrar() {
+  if (movimientoReducido()) return;
+
+  for (let i = 0; i < 28; i++) {
+    const brillo = document.createElement("span");
+
+    brillo.className = "brillo";
+    brillo.textContent = i % 2 ? "✦" : "✧";
+    brillo.style.left = Math.random() * 100 + "%";
+    brillo.style.top = Math.random() * 20 + "vh";
+    brillo.style.animationDelay = Math.random() * .3 + "s";
+
+    document.body.appendChild(brillo);
+
+    setTimeout(() => brillo.remove(), 2300);
+  }
+}
+
+elemento("jugar").addEventListener("click", () => {
+  elemento("inicio").hidden = true;
+  elemento("juego").hidden = false;
+
+  prepararJuego();
+  window.scrollTo(0, 0);
+});
+
+elemento("otra").addEventListener("click", () => {
+  prepararJuego();
+
+  elemento("cartas").scrollIntoView({
+    behavior: movimientoReducido() ? "auto" : "smooth",
+    block: "center"
+  });
+});
+
+elemento("volver").addEventListener("click", () => {
+  clearTimeout(temporizador);
+
+  elemento("juego").hidden = true;
+  elemento("inicio").hidden = false;
+
+  window.scrollTo(0, 0);
+});
+</script>
+
+</body>
+</html>
