@@ -72,6 +72,7 @@ button:focus-visible {
 .pie-inicio {
   padding: 0 15px 22px;
   font-size: 13px;
+  line-height: 1.6;
 }
 
 .encabezado {
@@ -116,8 +117,6 @@ h1 {
   font-size: 11px;
 }
 
-/* Se muestra la imagen original de las tres cartas.
-   Cada botón transparente coincide con una carta. */
 .tablero {
   position: relative;
   width: 100%;
@@ -192,15 +191,14 @@ h1 {
   margin: 0 auto 10px;
 }
 
-.prueba {
+.nota {
   margin: 10px 15px 0;
   padding-bottom: 25px;
-  font-size: 10px;
+  font-size: 11px;
   color: #9a835b;
-  letter-spacing: .5px;
+  line-height: 1.6;
 }
 
-/* Pantalla con la imagen real del premio. */
 #resultado {
   padding: 25px 15px;
 }
@@ -228,7 +226,7 @@ h1 {
 }
 
 .reclamo {
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.7;
   margin: 20px 10px;
 }
@@ -257,6 +255,7 @@ h1 {
     opacity: 0;
     transform: perspective(900px) rotateY(-80deg) scale(.85);
   }
+
   to {
     opacity: 1;
     transform: perspective(900px) rotateY(0) scale(1);
@@ -302,16 +301,14 @@ h1 {
   <img
     id="portada"
     class="portada"
-    src="portada.png"
+    src="portada.png?v=sin-horario"
     alt="Tom tiene una sorpresa del 11/11.
-    Con tu carga de $11.000 te llevás un premio.
-    De 12:30 a 15:00 hs."
+    Con tu carga de $11.000 te llevás un premio."
   >
 
   <p id="errorPortada" class="error" hidden>
-    No se pudo cargar la portada.
-    Revisá que la imagen se llame portada.png
-    y esté junto a index.html.
+    No se pudo cargar portada.png.
+    Revisá que esté junto a index.html.
   </p>
 
   <button id="jugar" class="boton">
@@ -319,7 +316,8 @@ h1 {
   </button>
 
   <p class="pie-inicio">
-    Tres cartas. Una sorpresa para vos.
+    Tres cartas. Una sorpresa para vos.<br>
+    Elegí con cuidado: tenés una sola oportunidad.
   </p>
 </section>
 
@@ -337,7 +335,6 @@ h1 {
 
     <div class="datos">
       <span>Carga de $11.000</span>
-      <span>12:30 a 15:00 hs</span>
     </div>
   </div>
 
@@ -370,8 +367,7 @@ h1 {
 
   <p id="errorCartas" class="error" hidden>
     No se pudo cargar cartas.png.
-    Subí la imagen de las tres cartas con ese nombre,
-    junto a index.html.
+    Revisá que la imagen esté junto a index.html.
   </p>
 
   <p
@@ -387,8 +383,8 @@ h1 {
     ← Volver al inicio
   </button>
 
-  <p class="prueba">
-    VERSIÓN DE PRUEBA · Podés jugar varias veces
+  <p class="nota">
+    Una participación por navegador.
   </p>
 </main>
 
@@ -422,35 +418,26 @@ h1 {
 
   <div class="datos">
     <span>Carga de $11.000</span>
-    <span>12:30 a 15:00 hs</span>
   </div>
 
-  <button id="otraVez" class="boton">
-    Volver a probar ↻
-  </button>
-
-  <button id="volverDesdePremio" class="volver">
-    ← Volver al inicio
-  </button>
-
-  <p class="prueba">
-    VERSIÓN DE PRUEBA · Sin bloqueo de participación
+  <p class="nota">
+    Tu elección quedó guardada.<br>
+    Si volvés a entrar desde este navegador,
+    verás el mismo premio.
   </p>
 </section>
 
 <script>
 /*
-  CONFIGURACIÓN
-
-  Todas las imágenes van junto a index.html:
+  IMÁGENES, junto a index.html:
   portada.png
   cartas.png
   premio15.png
   premio20.png
   premio25.png
-
-  El bloqueo de una participación se agregará al final.
 */
+
+const CLAVE = "tom_11_11_participacion_v1";
 
 const PREMIOS = [
   { porcentaje: 25, imagen: "premio25.png" },
@@ -459,12 +446,16 @@ const PREMIOS = [
 ];
 
 const $ = id => document.getElementById(id);
-const botones = Array.from(document.querySelectorAll(".elegir"));
+
+const botones = Array.from(
+  document.querySelectorAll(".elegir")
+);
 
 let premiosDePartida = [];
 let elegida = false;
 let temporizador;
 let cartasCargadas = false;
+let almacenamientoDisponible = true;
 
 function movimientoReducido() {
   return window.matchMedia(
@@ -480,56 +471,149 @@ function mostrarPantalla(id) {
   window.scrollTo(0, 0);
 }
 
+function leerPremio() {
+  const guardado = localStorage.getItem(CLAVE);
+
+  if (guardado === null) return null;
+
+  const porcentaje = Number(guardado);
+
+  const premio = PREMIOS.find(
+    item => item.porcentaje === porcentaje
+  );
+
+  if (!premio) {
+    throw new Error("Participación guardada no válida");
+  }
+
+  return premio;
+}
+
+function comprobarAlmacenamiento() {
+  const clavePrueba = CLAVE + "_comprobacion";
+
+  localStorage.setItem(clavePrueba, "ok");
+  localStorage.removeItem(clavePrueba);
+}
+
 function mezclar(lista) {
   const copia = [...lista];
 
   for (let i = copia.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
+
     [copia[i], copia[j]] = [copia[j], copia[i]];
   }
 
   return copia;
 }
 
+function actualizarBotones() {
+  botones.forEach(boton => {
+    boton.disabled =
+      !cartasCargadas ||
+      elegida ||
+      !almacenamientoDisponible;
+  });
+}
+
+function bloquearPorError() {
+  almacenamientoDisponible = false;
+
+  actualizarBotones();
+  mostrarPantalla("juego");
+
+  $("estado").textContent =
+    "Para participar, permití que el navegador guarde " +
+    "los datos de esta página y volvé a cargarla.";
+}
+
 function prepararPartida() {
   clearTimeout(temporizador);
 
-  elegida = false;
-  premiosDePartida = mezclar(PREMIOS);
+  try {
+    const premioGuardado = leerPremio();
 
-  $("estado").textContent =
-    "Tocá la carta que más te guste ✨";
+    if (premioGuardado) {
+      mostrarPremio(premioGuardado, false);
+      return;
+    }
 
-  botones.forEach(boton => {
-    boton.disabled = !cartasCargadas;
-    boton.classList.remove("seleccionada");
-  });
+    comprobarAlmacenamiento();
+    almacenamientoDisponible = true;
 
-  mostrarPantalla("juego");
+    elegida = false;
+    premiosDePartida = mezclar(PREMIOS);
+
+    botones.forEach(boton => {
+      boton.classList.remove("seleccionada");
+    });
+
+    $("estado").textContent =
+      "Tocá la carta que más te guste ✨";
+
+    actualizarBotones();
+    mostrarPantalla("juego");
+
+  } catch (error) {
+    bloquearPorError();
+  }
 }
 
 function elegirCarta(indice) {
-  if (elegida || !cartasCargadas) return;
+  if (
+    elegida ||
+    !cartasCargadas ||
+    !almacenamientoDisponible
+  ) {
+    return;
+  }
 
-  elegida = true;
+  try {
+    // Comprueba si ya participó, incluso desde otra pestaña.
+    const premioGuardado = leerPremio();
 
-  botones.forEach(boton => {
-    boton.disabled = true;
-  });
+    if (premioGuardado) {
+      mostrarPremio(premioGuardado, false);
+      return;
+    }
 
-  botones[indice].classList.add("seleccionada");
+    const premio = premiosDePartida[indice];
 
-  $("estado").textContent =
-    "✨ Tom está revelando tu sorpresa...";
+    // Guarda antes de revelar para conservar el premio
+    // incluso si recargan durante la animación.
+    localStorage.setItem(
+      CLAVE,
+      String(premio.porcentaje)
+    );
 
-  const premio = premiosDePartida[indice];
+    elegida = true;
+    actualizarBotones();
 
-  temporizador = setTimeout(() => {
-    mostrarPremio(premio);
-  }, movimientoReducido() ? 100 : 1100);
+    botones[indice].classList.add("seleccionada");
+
+    $("estado").textContent =
+      "✨ Tom está revelando tu sorpresa...";
+
+    temporizador = setTimeout(() => {
+      mostrarPremio(premio, true);
+    }, movimientoReducido() ? 100 : 1100);
+
+  } catch (error) {
+    bloquearPorError();
+  }
 }
 
-function mostrarPremio(premio) {
+function mostrarPremio(premio, esNuevo) {
+  clearTimeout(temporizador);
+
+  elegida = true;
+  actualizarBotones();
+
+  $("tituloResultado").textContent = esNuevo
+    ? "¡Esta es tu sorpresa!"
+    : "¡Este es tu premio!";
+
   $("textoPremio").textContent =
     "¡Te llevás un " + premio.porcentaje +
     "% de bonificación en tu carga de $11.000!";
@@ -553,12 +637,11 @@ function mostrarPremio(premio) {
     $("errorPremio").textContent =
       "Tu premio es " + premio.porcentaje +
       "%. No se pudo cargar " + premio.imagen +
-      ". Revisá que esté subida con ese nombre.";
+      ", pero tu elección quedó guardada.";
 
     $("errorPremio").hidden = false;
   };
 
-  // Reinicia la animación cada vez que aparece el premio.
   imagen.style.animation = "none";
   void imagen.offsetWidth;
   imagen.style.animation = "";
@@ -567,9 +650,11 @@ function mostrarPremio(premio) {
 
   mostrarPantalla("resultado");
 
-  $("tituloResultado").focus({ preventScroll: true });
+  $("tituloResultado").focus({
+    preventScroll: true
+  });
 
-  celebrar();
+  if (esNuevo) celebrar();
 }
 
 function celebrar() {
@@ -580,6 +665,7 @@ function celebrar() {
 
     estrella.className = "destello";
     estrella.textContent = i % 2 ? "✦" : "✧";
+
     estrella.setAttribute("aria-hidden", "true");
 
     estrella.style.left = Math.random() * 100 + "%";
@@ -593,47 +679,47 @@ function celebrar() {
   }
 }
 
-function volverAlInicio() {
-  clearTimeout(temporizador);
-  mostrarPantalla("inicio");
-}
-
-botones.forEach((boton, indice) => {
-  boton.addEventListener("click", () => elegirCarta(indice));
-});
-
-$("jugar").addEventListener("click", prepararPartida);
-$("otraVez").addEventListener("click", prepararPartida);
-
-$("volverInicio").addEventListener("click", volverAlInicio);
-$("volverDesdePremio").addEventListener("click", volverAlInicio);
-
-// Comprueba la imagen de las tres cartas.
 function actualizarEstadoCartas() {
   const imagen = $("imagenCartas");
 
-  cartasCargadas = imagen.complete && imagen.naturalWidth > 0;
+  cartasCargadas =
+    imagen.complete && imagen.naturalWidth > 0;
 
   $("errorCartas").hidden = cartasCargadas;
 
-  botones.forEach(boton => {
-    boton.disabled = !cartasCargadas || elegida;
-  });
+  actualizarBotones();
 }
 
+botones.forEach((boton, indice) => {
+  boton.addEventListener("click", () => {
+    elegirCarta(indice);
+  });
+});
+
+$("jugar").addEventListener(
+  "click",
+  prepararPartida
+);
+
+$("volverInicio").addEventListener("click", () => {
+  clearTimeout(temporizador);
+  mostrarPantalla("inicio");
+});
+
 $("imagenCartas").addEventListener(
-  "load", actualizarEstadoCartas
+  "load",
+  actualizarEstadoCartas
 );
 
 $("imagenCartas").addEventListener(
-  "error", actualizarEstadoCartas
+  "error",
+  actualizarEstadoCartas
 );
 
 if ($("imagenCartas").complete) {
   actualizarEstadoCartas();
 }
 
-// Comprueba la portada.
 $("portada").addEventListener("error", () => {
   $("errorPortada").hidden = false;
 });
@@ -642,11 +728,38 @@ if ($("portada").complete && !$("portada").naturalWidth) {
   $("errorPortada").hidden = false;
 }
 
-// Precarga las imágenes de los premios.
+// Precarga los premios.
 PREMIOS.forEach(premio => {
   const imagen = new Image();
   imagen.src = premio.imagen;
 });
+
+// Si eligió en otra pestaña, muestra el premio guardado.
+window.addEventListener("storage", evento => {
+  if (evento.key !== CLAVE) return;
+
+  try {
+    const premio = leerPremio();
+
+    if (premio) {
+      mostrarPremio(premio, false);
+    }
+  } catch (error) {
+    bloquearPorError();
+  }
+});
+
+// Recupera una participación anterior al abrir la página.
+// Mantiene la misma clave usada en el código anterior.
+try {
+  const premioGuardado = leerPremio();
+
+  if (premioGuardado) {
+    mostrarPremio(premioGuardado, false);
+  }
+} catch (error) {
+  bloquearPorError();
+}
 </script>
 
 </body>
