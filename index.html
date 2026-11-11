@@ -184,7 +184,7 @@ h1{
 .condiciones h3{
   margin:0 0 18px;
   text-align:center;
-  font: bold 23px Georgia,serif;
+  font:bold 23px Georgia,serif;
   color:#a7751e;
 }
 .condiciones ul{
@@ -387,7 +387,8 @@ h1{
       </li>
 
       <li>
-        📱 Se permite <strong>un premio por número de teléfono</strong>.
+        📱 Se permite
+        <strong>un premio por número de teléfono</strong>.
       </li>
 
       <li>
@@ -435,17 +436,23 @@ h1{
 
 <script>
 /*
-  Las imágenes van junto a index.html:
+  IMÁGENES, junto a index.html:
   portada.png
   cartas.png
   premio15.png
   premio20.png
   premio25.png
+
+  ORDEN FIJO:
+  Primera carta: 25%
+  Carta del medio: 15%
+  Tercera carta: 20%
 */
 
-// Conserva las participaciones guardadas con el código anterior.
+// Conserva las participaciones guardadas anteriormente.
 const CLAVE = "tom_11_11_participacion_v1";
 
+// Este orden coincide con los botones de izquierda a derecha.
 const PREMIOS = [
   { porcentaje: 25, imagen: "premio25.png" },
   { porcentaje: 15, imagen: "premio15.png" },
@@ -458,7 +465,6 @@ const botones = Array.from(
   document.querySelectorAll(".elegir")
 );
 
-let premiosDePartida = [];
 let elegida = false;
 let temporizador;
 let cartasCargadas = false;
@@ -503,18 +509,6 @@ function comprobarAlmacenamiento() {
   localStorage.removeItem(clavePrueba);
 }
 
-function mezclar(lista) {
-  const copia = [...lista];
-
-  for (let i = copia.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-
-    [copia[i], copia[j]] = [copia[j], copia[i]];
-  }
-
-  return copia;
-}
-
 function actualizarBotones() {
   botones.forEach(boton => {
     boton.disabled =
@@ -547,10 +541,9 @@ function prepararPartida() {
     }
 
     comprobarAlmacenamiento();
+
     almacenamientoDisponible = true;
     elegida = false;
-
-    premiosDePartida = mezclar(PREMIOS);
 
     botones.forEach(boton => {
       boton.classList.remove("seleccionada");
@@ -584,7 +577,11 @@ function elegirCarta(indice) {
       return;
     }
 
-    const premio = premiosDePartida[indice];
+    // Orden fijo, sin mezclar:
+    // índice 0 = izquierda = 25%
+    // índice 1 = medio = 15%
+    // índice 2 = derecha = 20%
+    const premio = PREMIOS[indice];
 
     // Guarda antes de comenzar la animación.
     localStorage.setItem(
