@@ -7,288 +7,258 @@
 <title>11:11 · Las cartas de Tom</title>
 
 <style>
-* {
-  box-sizing: border-box;
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#fff7e8;
+  color:#694714;
 }
-
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #fff7e8;
-  color: #694714;
+[hidden]{display:none!important}
+button{
+  font:inherit;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
 }
-
-[hidden] {
-  display: none !important;
+button:focus-visible{
+  outline:3px solid #94621a;
+  outline-offset:5px;
 }
-
-button {
-  font: inherit;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-button:focus-visible {
-  outline: 3px solid #94621a;
-  outline-offset: 5px;
-}
-
-.pantalla {
-  max-width: 600px;
-  margin: auto;
-  min-height: 100svh;
-  text-align: center;
+.pantalla{
+  max-width:600px;
+  margin:auto;
+  min-height:100svh;
+  text-align:center;
   background:
-    radial-gradient(circle at top, white, transparent 60%),
+    radial-gradient(circle at top,white,transparent 60%),
     #fff7e8;
 }
-
-.portada {
-  display: block;
-  width: 100%;
-  height: auto;
+.portada{
+  display:block;
+  width:100%;
+  height:auto;
 }
-
-.boton {
-  display: block;
-  width: min(88%, 350px);
-  margin: 20px auto;
-  border: 1px solid #b78329;
-  border-radius: 40px;
-  padding: 17px 20px;
-  font-weight: bold;
-  color: #573609;
-  background:
-    linear-gradient(120deg, #ffe8a3, #dca63c, #fff0bc);
-  box-shadow: 0 8px 22px #b68a2933;
-  transition: transform .2s, filter .2s;
+.boton{
+  display:block;
+  width:min(88%,350px);
+  margin:20px auto;
+  border:1px solid #b78329;
+  border-radius:40px;
+  padding:17px 20px;
+  font-weight:bold;
+  color:#573609;
+  background:linear-gradient(120deg,#ffe8a3,#dca63c,#fff0bc);
+  box-shadow:0 8px 22px #b68a2933;
+  transition:transform .2s,filter .2s;
 }
-
-.boton:hover {
-  filter: brightness(1.07);
-  transform: translateY(-2px);
+.boton:hover{
+  filter:brightness(1.07);
+  transform:translateY(-2px);
 }
-
-.pie-inicio {
-  padding: 0 15px 22px;
-  font-size: 13px;
-  line-height: 1.6;
+.pie-inicio{
+  padding:0 15px 22px;
+  font-size:13px;
+  line-height:1.6;
 }
-
-.encabezado {
-  padding: 28px 18px 0;
+.encabezado{padding:28px 18px 0}
+.marca{
+  display:inline-block;
+  padding:11px 18px;
+  border:1px solid #cfaa57;
+  border-radius:30px;
+  font-size:11px;
+  font-weight:bold;
+  letter-spacing:2px;
 }
-
-.marca {
-  display: inline-block;
-  padding: 11px 18px;
-  border: 1px solid #cfaa57;
-  border-radius: 30px;
-  font-size: 11px;
-  font-weight: bold;
-  letter-spacing: 2px;
+h1{
+  margin:22px 0 12px;
+  font:bold 34px Georgia,serif;
+  color:#aa771f;
 }
-
-h1 {
-  margin: 22px 0 12px;
-  font: bold 34px Georgia, serif;
-  color: #aa771f;
+.descripcion{
+  margin:0;
+  font-size:14px;
+  line-height:1.7;
 }
-
-.descripcion {
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.7;
+.datos{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:18px;
 }
-
-.datos {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 18px;
+.datos span{
+  border:1px solid #dbc18d;
+  background:#ffffff99;
+  border-radius:25px;
+  padding:8px 12px;
+  font-size:11px;
 }
-
-.datos span {
-  border: 1px solid #dbc18d;
-  background: #ffffff99;
-  border-radius: 25px;
-  padding: 8px 12px;
-  font-size: 11px;
+.tablero{
+  position:relative;
+  width:100%;
+  margin:8px auto 0;
+  isolation:isolate;
 }
-
-.tablero {
-  position: relative;
-  width: 100%;
-  margin: 8px auto 0;
-  isolation: isolate;
+.imagen-cartas{
+  display:block;
+  width:100%;
+  height:auto;
 }
-
-.imagen-cartas {
-  display: block;
-  width: 100%;
-  height: auto;
+.elegir{
+  position:absolute;
+  top:25.3%;
+  width:31.5%;
+  height:47.2%;
+  padding:0;
+  border:2px solid transparent;
+  border-radius:20px;
+  background:transparent;
+  transition:background .25s,box-shadow .25s,transform .25s;
 }
-
-.elegir {
-  position: absolute;
-  top: 25.3%;
-  width: 31.5%;
-  height: 47.2%;
-  padding: 0;
-  border: 2px solid transparent;
-  border-radius: 20px;
-  background: transparent;
-  transition:
-    background .25s,
-    box-shadow .25s,
-    transform .25s;
-}
-
-.elegir:nth-of-type(1) {
-  left: 1.8%;
-}
-
-.elegir:nth-of-type(2) {
-  left: 34.4%;
-}
-
-.elegir:nth-of-type(3) {
-  left: 67.1%;
-}
-
+.elegir:nth-of-type(1){left:1.8%}
+.elegir:nth-of-type(2){left:34.4%}
+.elegir:nth-of-type(3){left:67.1%}
 .elegir:not(:disabled):hover,
-.elegir:not(:disabled):focus-visible {
-  background: #fff8cf22;
-  box-shadow:
-    0 0 24px #e5b64499,
-    inset 0 0 20px #fff5c555;
-  transform: translateY(-4px);
+.elegir:not(:disabled):focus-visible{
+  background:#fff8cf22;
+  box-shadow:0 0 24px #e5b64499,inset 0 0 20px #fff5c555;
+  transform:translateY(-4px);
 }
-
-.elegir.seleccionada {
-  border-color: #fff1ad;
-  box-shadow: 0 0 35px #e3ac35;
-  background: #fff5cf33;
+.elegir.seleccionada{
+  border-color:#fff1ad;
+  box-shadow:0 0 35px #e3ac35;
+  background:#fff5cf33;
 }
-
-.elegir:disabled {
-  cursor: default;
+.elegir:disabled{cursor:default}
+.indicacion{
+  min-height:23px;
+  margin:0 15px 15px;
+  font-size:14px;
+  line-height:1.5;
 }
-
-.indicacion {
-  min-height: 23px;
-  margin: 0 15px 15px;
-  font-size: 14px;
-  line-height: 1.5;
+.volver{
+  border:0;
+  background:transparent;
+  color:#8d6c35;
+  padding:13px 18px;
+  margin:0 auto 10px;
 }
-
-.volver {
-  border: 0;
-  background: transparent;
-  color: #8d6c35;
-  padding: 13px 18px;
-  margin: 0 auto 10px;
+.nota{
+  margin:10px 15px 0;
+  padding-bottom:25px;
+  font-size:11px;
+  color:#9a835b;
+  line-height:1.6;
 }
-
-.nota {
-  margin: 10px 15px 0;
-  padding-bottom: 25px;
-  font-size: 11px;
-  color: #9a835b;
-  line-height: 1.6;
+#resultado{padding:25px 15px}
+.titulo-premio{
+  margin:20px 0 10px;
+  font:bold 30px Georgia,serif;
+  color:#ad7b23;
 }
-
-#resultado {
-  padding: 25px 15px;
+.texto-premio{
+  font-size:14px;
+  line-height:1.6;
 }
-
-.titulo-premio {
-  margin: 20px 0 10px;
-  font: bold 30px Georgia, serif;
-  color: #ad7b23;
+.imagen-premio{
+  display:block;
+  width:100%;
+  max-width:440px;
+  height:auto;
+  margin:20px auto;
+  border-radius:20px;
+  box-shadow:0 12px 35px #a37a2533;
+  animation:revelar .8s ease both;
 }
-
-.texto-premio {
-  font-size: 14px;
-  line-height: 1.6;
+.condiciones{
+  max-width:440px;
+  margin:22px auto;
+  padding:22px 18px;
+  text-align:left;
+  border:1px solid #d8b977;
+  border-radius:20px;
+  background:linear-gradient(140deg,#fffdf7,#fff1d3);
+  box-shadow:0 7px 20px #a37a2514;
 }
-
-.imagen-premio {
-  display: block;
-  width: 100%;
-  max-width: 440px;
-  height: auto;
-  margin: 20px auto;
-  border-radius: 20px;
-  box-shadow: 0 12px 35px #a37a2533;
-  animation: revelar .8s ease both;
+.condiciones h3{
+  margin:0 0 18px;
+  text-align:center;
+  font: bold 23px Georgia,serif;
+  color:#a7751e;
 }
-
-.reclamo {
-  font-size: 14px;
-  line-height: 1.7;
-  margin: 20px 10px;
+.condiciones ul{
+  list-style:none;
+  margin:0;
+  padding:0;
 }
-
-.error {
-  padding: 16px;
-  margin: 15px;
-  border: 1px solid #b88631;
-  border-radius: 12px;
-  background: #fff4d8;
-  font-size: 13px;
-  line-height: 1.6;
+.condiciones li{
+  padding:13px 0;
+  border-bottom:1px solid #dfc99788;
+  font-size:14px;
+  line-height:1.7;
 }
-
-.destello {
-  position: fixed;
-  z-index: 20;
-  color: #d4a02c;
-  font-size: 24px;
-  pointer-events: none;
-  animation: caer 1.8s ease-out forwards;
+.condiciones li:last-child{border-bottom:0}
+.reclamo{
+  max-width:440px;
+  margin:20px auto;
+  padding:18px;
+  border-radius:16px;
+  background:#f4e2b9;
+  font-size:14px;
+  line-height:1.8;
 }
-
-@keyframes revelar {
-  from {
-    opacity: 0;
-    transform: perspective(900px) rotateY(-80deg) scale(.85);
+.error{
+  padding:16px;
+  margin:15px;
+  border:1px solid #b88631;
+  border-radius:12px;
+  background:#fff4d8;
+  font-size:13px;
+  line-height:1.6;
+}
+.destello{
+  position:fixed;
+  z-index:20;
+  color:#d4a02c;
+  font-size:24px;
+  pointer-events:none;
+  animation:caer 1.8s ease-out forwards;
+}
+@keyframes revelar{
+  from{
+    opacity:0;
+    transform:perspective(900px) rotateY(-80deg) scale(.85);
   }
-
-  to {
-    opacity: 1;
-    transform: perspective(900px) rotateY(0) scale(1);
+  to{
+    opacity:1;
+    transform:perspective(900px) rotateY(0) scale(1);
   }
 }
-
-@keyframes caer {
-  to {
-    transform: translateY(75vh) rotate(240deg);
-    opacity: 0;
+@keyframes caer{
+  to{
+    transform:translateY(75vh) rotate(240deg);
+    opacity:0;
   }
 }
-
-@media (min-width: 650px) {
-  body {
-    padding: 20px;
+@media(min-width:650px){
+  body{
+    padding:20px;
     background:
-      radial-gradient(circle at 15% 20%, white, transparent 40%),
+      radial-gradient(circle at 15% 20%,white,transparent 40%),
       #f1e1bd;
   }
-
-  .pantalla {
-    min-height: calc(100svh - 40px);
-    overflow: hidden;
-    border-radius: 24px;
-    box-shadow: 0 15px 60px #8e6c2426;
+  .pantalla{
+    min-height:calc(100svh - 40px);
+    overflow:hidden;
+    border-radius:24px;
+    box-shadow:0 15px 60px #8e6c2426;
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation: none !important;
-    transition: none !important;
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation:none!important;
+    transition:none!important;
   }
 }
 </style>
@@ -367,7 +337,7 @@ h1 {
 
   <p id="errorCartas" class="error" hidden>
     No se pudo cargar cartas.png.
-    Revisá que la imagen esté junto a index.html.
+    Revisá que esté junto a index.html.
   </p>
 
   <p
@@ -388,7 +358,7 @@ h1 {
   </p>
 </main>
 
-<!-- PREMIO -->
+<!-- PREMIO Y CONDICIONES -->
 <section
   id="resultado"
   class="pantalla"
@@ -403,21 +373,57 @@ h1 {
 
   <p id="textoPremio" class="texto-premio"></p>
 
-  <img
-    id="imagenPremio"
-    class="imagen-premio"
-    alt=""
-  >
+  <img id="imagenPremio" class="imagen-premio" alt="">
 
   <p id="errorPremio" class="error" hidden></p>
 
-  <p class="reclamo">
-    📸 Sacá una captura de esta pantalla<br>
-    y enviala para reclamar tu premio.
-  </p>
+  <div class="condiciones">
+    <h3>🎁 Condiciones de tu bono</h3>
 
-  <div class="datos">
-    <span>Carga de $11.000</span>
+    <ul>
+      <li>
+        🎰 Válido para <strong>una sola plataforma</strong>.
+        Elegí en cuál querés utilizar tu premio al reclamarlo.
+      </li>
+
+      <li>
+        📱 Se permite <strong>un premio por número de teléfono</strong>.
+      </li>
+
+      <li>
+        💰 La bonificación se aplica a
+        <strong>una única carga de $11.000</strong>.
+      </li>
+
+      <li>
+        🔄 Para solicitar el retiro, tenés que
+        <strong>duplicar el saldo total de tu carga
+        más la bonificación</strong>.
+      </li>
+
+      <li>
+        🚫 <strong>No válido para ruleta.</strong>
+      </li>
+
+      <li>
+        📸 Enviá una <strong>captura de tu premio
+        antes de transferir</strong> para solicitar
+        la bonificación.
+      </li>
+
+      <li>
+        💬 <strong>Pedinos alias antes de transferir</strong>
+        y avisá en qué plataforma querés usar tu bono.
+      </li>
+    </ul>
+  </div>
+
+  <div class="reclamo">
+    📲 <strong>¿Cómo reclamo?</strong><br>
+    Sacá una captura de esta pantalla y enviala
+    por WhatsApp junto con tu nombre y la plataforma elegida.
+    <br>
+    ✨ ¡Avisanos antes de realizar tu carga!
   </div>
 
   <p class="nota">
@@ -429,7 +435,7 @@ h1 {
 
 <script>
 /*
-  IMÁGENES, junto a index.html:
+  Las imágenes van junto a index.html:
   portada.png
   cartas.png
   premio15.png
@@ -437,6 +443,7 @@ h1 {
   premio25.png
 */
 
+// Conserva las participaciones guardadas con el código anterior.
 const CLAVE = "tom_11_11_participacion_v1";
 
 const PREMIOS = [
@@ -541,8 +548,8 @@ function prepararPartida() {
 
     comprobarAlmacenamiento();
     almacenamientoDisponible = true;
-
     elegida = false;
+
     premiosDePartida = mezclar(PREMIOS);
 
     botones.forEach(boton => {
@@ -570,7 +577,6 @@ function elegirCarta(indice) {
   }
 
   try {
-    // Comprueba si ya participó, incluso desde otra pestaña.
     const premioGuardado = leerPremio();
 
     if (premioGuardado) {
@@ -580,8 +586,7 @@ function elegirCarta(indice) {
 
     const premio = premiosDePartida[indice];
 
-    // Guarda antes de revelar para conservar el premio
-    // incluso si recargan durante la animación.
+    // Guarda antes de comenzar la animación.
     localStorage.setItem(
       CLAVE,
       String(premio.porcentaje)
@@ -665,7 +670,6 @@ function celebrar() {
 
     estrella.className = "destello";
     estrella.textContent = i % 2 ? "✦" : "✧";
-
     estrella.setAttribute("aria-hidden", "true");
 
     estrella.style.left = Math.random() * 100 + "%";
@@ -728,13 +732,13 @@ if ($("portada").complete && !$("portada").naturalWidth) {
   $("errorPortada").hidden = false;
 }
 
-// Precarga los premios.
+// Precarga las imágenes de los premios.
 PREMIOS.forEach(premio => {
   const imagen = new Image();
   imagen.src = premio.imagen;
 });
 
-// Si eligió en otra pestaña, muestra el premio guardado.
+// Recupera el premio si participa desde otra pestaña.
 window.addEventListener("storage", evento => {
   if (evento.key !== CLAVE) return;
 
@@ -749,8 +753,7 @@ window.addEventListener("storage", evento => {
   }
 });
 
-// Recupera una participación anterior al abrir la página.
-// Mantiene la misma clave usada en el código anterior.
+// Recupera una elección anterior al abrir la página.
 try {
   const premioGuardado = leerPremio();
 
